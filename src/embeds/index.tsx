@@ -9,7 +9,7 @@ import { ThirdwebProvider, useContract } from "@thirdweb-dev/react";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
 import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { Body } from "src/shared/body";
+import { Body } from "../shared/body";
 import { ERC721ClaimButton } from "../shared/claim-button-erc721";
 import { ContractMetadataPage } from "../shared/contract-metadata-page";
 import { Footer } from "../shared/footer";
@@ -19,19 +19,19 @@ import chakraTheme from "../shared/theme";
 import { fontsizeCss } from "../shared/theme/typography";
 import { parseIpfsGateway } from "../utils/parseIpfsGateway";
 
-interface SignatureDropEmbedProps {
+interface NFTDropEmbedProps {
   contractAddress: string;
   colorScheme: ColorMode;
   primaryColor: string;
 }
 
-const SignatureDropEmbed: React.FC<SignatureDropEmbedProps> = ({
+const NFTDropEmbed: React.FC<NFTDropEmbedProps> = ({
   contractAddress,
   colorScheme,
   primaryColor,
 }) => {
   const { setColorMode } = useColorMode();
-  const { contract: sigDrop } = useContract(contractAddress, "signature-drop");
+  const { contract: nftDrop } = useContract(contractAddress, "nft-drop");
 
   useEffect(() => {
     setColorMode(colorScheme);
@@ -54,12 +54,14 @@ const SignatureDropEmbed: React.FC<SignatureDropEmbedProps> = ({
     >
       <Header primaryColor={primaryColor} colorScheme={colorScheme} />
       <Body>
-        <ContractMetadataPage contract={sigDrop}>
-          <ERC721ClaimButton
-            contract={sigDrop}
-            colorScheme={colorScheme}
-            primaryColor={primaryColor}
-          />
+        <ContractMetadataPage contract={nftDrop}>
+          {nftDrop && (
+            <ERC721ClaimButton
+              contract={nftDrop}
+              colorScheme={colorScheme}
+              primaryColor={primaryColor}
+            />
+          )}
         </ContractMetadataPage>
       </Body>
       <Footer />
@@ -70,12 +72,13 @@ const SignatureDropEmbed: React.FC<SignatureDropEmbedProps> = ({
 const urlParams = new URL(window.location.toString()).searchParams;
 
 const App: React.FC = () => {
-  const chainId = Number(urlParams.get("chainId"));
-  const contractAddress = urlParams.get("contract") || "";
+  const chainId = 137;
+  const contractAddress = urlParams.get("contract") || "0xfcA986C13600502E3B9bc285bE2cdb54C7063C97";
   const rpcUrl = urlParams.get("rpcUrl") || "";
-  const relayerUrl = urlParams.get("relayUrl") || "";
+  const relayerUrl = urlParams.get("relayUrl") || "https://api.defender.openzeppelin.com/autotasks/4685dd5e-db3d-472c-97ff-c02b1290577f/runs/webhook/93e5fe57-9d61-4f42-9ddf-75e4868c17eb/S9MCY7vQRMbiNwT71guWbT";
   const biconomyApiKey = urlParams.get("biconomyApiKey") || "";
   const biconomyApiId = urlParams.get("biconomyApiId") || "";
+
   const colorScheme = urlParams.get("theme") === "dark" ? "dark" : "light";
   const primaryColor = urlParams.get("primaryColor") || "purple";
 
@@ -108,7 +111,7 @@ const App: React.FC = () => {
           }
           chainRpc={{ [chainId]: rpcUrl }}
         >
-          <SignatureDropEmbed
+          <NFTDropEmbed
             contractAddress={contractAddress}
             colorScheme={colorScheme}
             primaryColor={primaryColor}

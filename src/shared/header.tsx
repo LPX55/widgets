@@ -1,3 +1,4 @@
+import { LogoEvmos } from "./svg/Logo";
 import { Stack } from "@chakra-ui/react";
 import { ConnectWallet } from "@thirdweb-dev/react";
 import { ColorMode } from "@thirdweb-dev/react/dist/declarations/src/components/theme";
@@ -25,9 +26,10 @@ export const Header: React.FC<HeaderProps> = ({
       w="100%"
       flexGrow={0}
       borderBottom="1px solid rgba(0,0,0,.1)"
-      justify="flex-end"
+      justify="space-between"
       py={2}
-    >
+    > 
+      <LogoEvmos />
       <ConnectWallet accentColor={accentColor} colorMode={colorScheme} />
     </Stack>
   );
